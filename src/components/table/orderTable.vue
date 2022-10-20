@@ -19,9 +19,29 @@
                         <template v-if="column.dataIndex === 'action'">
                               <a-button type="primary" size="small" @click="profie(record)">{{ $t('common.profile') }}
                               </a-button>
+                              <a-button style="margin-left: 10px;" type="primary" size="small" @click="showModal(record)">
+                                To new order
+                              </a-button>
                         </template>
                   </template>
             </c-table>
+            <a-modal v-model:visible="visible" :footer="null" title="Chose create by env">
+                <!-- <a-list :data-source="sourceList">
+                    <template #renderItem="{ item }">
+                        <a-list-item>
+                            <p>{{ item.source }}</p>
+                        </a-list-item>
+                    </template>
+                </a-list> -->
+                <!-- <a-table :columns="createByOrderCol" :data-source="sourceList" :pagination="{ hideOnSinglePage : true }" size="middle" /> -->
+                <a-table :columns="createByOrderCol" :data-source="sourceList" :pagination="{ hideOnSinglePage : true }" size="middle">
+                    <template #bodyCell="{ column, record }">
+                        <template v-if="column.title === 'action'">
+                            <a-button type="primary" size="small" @click="startByOldOrder(record)">Create it</a-button>
+                        </template>
+                    </template>
+                </a-table>
+            </a-modal>
       </a-card>
 </template>
 
@@ -37,6 +57,8 @@ import { OrderTableData } from '@/types'
 import { useStore } from '@/store'
 import { useI18n } from 'vue-i18n';
 import { tableRef } from ".";
+import { Request as RequestToSchema } from "@/apis/fetchSchema";
+import { RespFetchSource } from "@/apis/listAppApis"
 
 interface propsAttr {
       size?: string
@@ -124,9 +146,49 @@ const store = useStore()
 
 const request = new Request
 
+const requestToSchema = new RequestToSchema
+
 const tbl = ref()
 
 const isAudit = ref("")
+
+const createByOrderCol = [
+    { title: 'source', dataIndex : 'source' },
+    { title: 'idc', dataIndex : 'idc' },
+    { title: 'id', dataIndex : 'source_id' },
+    { title: 'action' },
+]
+
+
+const visible = ref<boolean>(false)
+let sourceList = ref<any[]>(new Array());
+
+const showModal = (record: OrderTableData) => {
+    visible.value = true;
+    let reqType:string = '';
+    switch (record.type) {
+    case 0:
+        reqType = 'ddl'
+        break
+    case 1:
+        reqType = 'dml'
+        break
+    }
+    requestToSchema.Source(reqType).then((res: AxiosResponse<Res<any[]>>) => {
+            sourceList.value = res.data.payload;
+            console.log(sourceList)
+        }).finally(() => {
+            // loading.value = false
+        })
+    store.commit("order/ORDER_STORE", record);
+}
+
+const startByOldOrder = (item : any) => {
+      router.push({ 
+        path: "/apply/order/old",
+        query: { work_id: store.state.order.order.work_id, type: store.state.order.order.type, idc: item.idc, source: item.source, source_id: item.source_id }
+     })
+}
 
 const profie = (record: OrderTableData) => {
       store.commit("order/ORDER_STORE", record)

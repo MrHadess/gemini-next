@@ -78,6 +78,14 @@ const router = createRouter({
                                           component: () => import('@/views/apply/order.vue'),
                                     },
                                     {
+                                          path: '/apply/order/old',
+                                          name: 'apply/order/old',
+                                          meta: {
+                                                title: 'Order - 工单填写OLD'
+                                          },
+                                          component: () => import('@/views/apply/orderByOld.vue'),
+                                    },
+                                    {
                                           path: '/apply/query',
                                           name: 'apply/query',
                                           meta: {

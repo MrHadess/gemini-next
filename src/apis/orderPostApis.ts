@@ -101,6 +101,14 @@ export class Request {
                   data: params
             })
       }
+      
+      CopyOrderByIDC (params: OrderItem): AxiosPromise {
+            return request({
+                  url: `${COMMON_URI}/common/copyOrderByIDC`,
+                  method: "POST",
+                  data: params
+            })
+      }
 
       List (expr: OrderParams, tp: string): AxiosPromise {
             return request({

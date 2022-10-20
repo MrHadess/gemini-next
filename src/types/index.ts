@@ -58,6 +58,7 @@ export interface OrderTableData {
 }
 
 export interface OrderItem {
+      work_id: string
       type: string | number
       idc: string
       source: string
