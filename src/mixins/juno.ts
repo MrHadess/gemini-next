@@ -68,6 +68,7 @@ export default function () {
       ];
 
       const orderItems: UnwrapRef<OrderItem> = reactive({
+            work_id: "",
             type: -1,
             idc: "",
             source: "",
