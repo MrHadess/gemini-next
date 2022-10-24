@@ -28,5 +28,7 @@ jobs:
         cache: 'yarn'
     - name: Cache
       uses: actions/cache@v3.0.11l
+      path: **/node_modules
+      key: node_module_dir
     - run: yarn
     - run: yarn run build
