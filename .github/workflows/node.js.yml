@@ -33,3 +33,9 @@ jobs:
         key: node_module_dir
     - run: yarn
     - run: yarn run build
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@v4
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        title: MyReleaseMessage
